@@ -1,0 +1,8 @@
+name: SkyGridSupport
+version: '${project.version}'
+main: com.skygridsupport.SkyGridSupport
+api-version: '1.20'
+
+commands:
+  gridrtp:
+    description: Randomly teleport in the skygrid.
