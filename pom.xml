@@ -6,7 +6,7 @@
 
     <groupId>com</groupId>
     <artifactId>SkyGridSupport</artifactId>
-    <version>1.20.4-1</version>
+    <version>1.20.4-2</version>
     <packaging>jar</packaging>
 
     <name>SkyGridSupport</name>

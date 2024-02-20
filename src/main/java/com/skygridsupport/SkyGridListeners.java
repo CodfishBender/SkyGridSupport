@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -59,8 +60,9 @@ public class SkyGridListeners implements Listener {
 
         for (ItemStack item : lootTable.populateLoot(new Random(), lootContext)) {
             Location l = Objects.requireNonNull(e.getClickedBlock()).getLocation();
-            l.add(0,0.5,0);
-            e.getClickedBlock().getWorld().dropItemNaturally(l,item);
+            l.add(0.5,1.4,0.5);
+            Item i = e.getClickedBlock().getWorld().dropItem(l,item);
+            i.setPickupDelay(0);
         }
     }
 }
