@@ -1,5 +1,13 @@
 package com.skygridsupport;
 
+import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,7 +25,6 @@ import org.bukkit.loot.LootTables;
 
 import java.util.Objects;
 import java.util.Random;
-import java.util.Vector;
 
 public class SkyGridListeners implements Listener {
 
@@ -31,6 +38,30 @@ public class SkyGridListeners implements Listener {
 
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
+
+        // GriefPrevention Support
+        if (SkyGridSupport.gpLoaded) {
+            if (GriefPrevention.instance.claimsEnabledForWorld(block.getWorld())) {
+                String allowBuild = GriefPrevention.instance.allowBuild(player,block.getLocation());
+                if (allowBuild != null) {
+                    player.sendMessage("No permission.");
+                    return;
+                }
+            }
+        }
+
+        // WorldGuard Support
+        if (SkyGridSupport.wgLoaded) {
+            RegionQuery query =  WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+            com.sk89q.worldedit.util.Location loc = new com.sk89q.worldedit.util.Location(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(block.getWorld()), block.getX(), block.getY(), block.getZ());
+
+            if (!WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(block.getWorld()))) {
+                if (!query.testState(loc, localPlayer, Flags.BLOCK_BREAK)) {
+                    return;
+                }
+            }
+        }
 
         int r = rand.nextInt(100);
 
